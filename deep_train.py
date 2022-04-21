@@ -29,13 +29,13 @@ transforms = transforms.Compose([transforms.Resize([configs['img_width'], config
                                  transforms.Normalize([0.485, 0.456, 0.406],
                                                       [0.229, 0.224, 0.225])])
 
-# Flowers102-->构建数据集
+# Flowers102-->构建数据集（flowers102的test数据集较大 这里的train_dataset使用该数据的test_dataset）
 flowers102_train_dataset = datasets.Flowers102('~/.pytorch/Flowers102/', download=True, split='test',
                                                transform=transforms)
-flowers102_train_data_loader = DataLoader(flowers102_train_dataset, batch_size=configs['train_batch_size'],
+flowers102_train_data_loader = DataLoader(flowers102_train_dataset, batch_size=configs['train_batch_size']*2,
                                           shuffle=True, drop_last=True)
 flowers102_val_dataset = datasets.Flowers102('~/.pytorch/Flowers102/', download=True, split='val', transform=transforms)
-flowers102_val_data_loader = DataLoader(flowers102_val_dataset, batch_size=configs['val_batch_size'],
+flowers102_val_data_loader = DataLoader(flowers102_val_dataset, batch_size=configs['val_batch_size']*2,
                                         shuffle=True, drop_last=True)
 
 # Food101-->构建数据集
@@ -56,7 +56,7 @@ model.to(device)
 #                                                   f"_host{configs['host_channels']}"
 #                                                   f"_guest{configs['guest_channels']}"
 #                                                   f"_epochNum{configs['epoch_num']}"
-#                                                   f"_batchSize{int(configs['train_batch_size']/2)}"
+#                                                   f"_batchSize{configs['train_batch_size']}"
 #                                                   f"_lr{configs['learning_rate']}"
 #                                                   f"_encoderWeight{configs['encoder_weight']}"
 #                                                   f"_decoderWeight{configs['decoder_weight']}
@@ -179,7 +179,7 @@ for epoch in range(configs['epoch_num']):
                                                           f"_host{configs['host_channels']}"
                                                           f"_guest{configs['guest_channels']}"
                                                           f"_epochNum{configs['epoch_num']}"
-                                                          f"_batchSize{int(configs['train_batch_size'] / 2)}"
+                                                          f"_batchSize{configs['train_batch_size']}"
                                                           f"_lr{configs['learning_rate']}"
                                                           f"_encoderWeight{configs['encoder_weight']}"
                                                           f"_decoderWeight{configs['decoder_weight']}"
