@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class Decoder(nn.Module):
-    def __init__(self, host_channels=3, guest_channels=1, kernel_size=3):
+    def __init__(self, host_channels=3, guest_channels=1, kernel_size=(3,3)):
         """
         使用二维卷积定义解码器
         :param in_channels: 输入图像通道数

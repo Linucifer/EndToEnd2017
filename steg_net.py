@@ -7,7 +7,7 @@ from encoder import Encoder
 
 
 class StegNet(nn.Module):
-    def __init__(self, host_channels=3, guest_channels=1, kernel_size=3):
+    def __init__(self, host_channels=3, guest_channels=1, kernel_size=(3,3)):
         """
         使用定义好的encoder和decoder构造模型
         :param host_channels: 载体图像通道数

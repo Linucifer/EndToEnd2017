@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class Encoder(nn.Module):
-    def __init__(self, host_channels=3, guest_channels=1, kernel_size=3):
+    def __init__(self, host_channels=3, guest_channels=1, kernel_size=(3,3)):
         """
         使用二维卷积定义编码器
         :param host_channels: 载体图像通道数
@@ -20,9 +20,9 @@ class Encoder(nn.Module):
         self.conv_h5 = nn.Conv2d(in_channels=16, out_channels=16, kernel_size=kernel_size, padding=1)
         self.conv_h6 = nn.Conv2d(in_channels=32, out_channels=16, kernel_size=kernel_size, padding=1)
         self.conv_h7 = nn.Conv2d(in_channels=16, out_channels=16, kernel_size=kernel_size, padding=1)
-        self.conv8 = nn.Conv2d(in_channels=32, out_channels=16, kernel_size=1)
-        self.conv9 = nn.Conv2d(in_channels=16, out_channels=8, kernel_size=1)
-        self.conv10 = nn.Conv2d(in_channels=8, out_channels=host_channels, kernel_size=1)
+        self.conv8 = nn.Conv2d(in_channels=32, out_channels=16, kernel_size=(1,1))
+        self.conv9 = nn.Conv2d(in_channels=16, out_channels=8, kernel_size=(1,1))
+        self.conv10 = nn.Conv2d(in_channels=8, out_channels=host_channels, kernel_size=(1,1))
 
         # guest
         self.conv_g1 = nn.Conv2d(in_channels=guest_channels, out_channels=16, kernel_size=kernel_size, padding=1)

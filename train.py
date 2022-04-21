@@ -23,8 +23,10 @@ configs = {
     'learning_rate': 1e-4
 }
 
+
 # 下载训练图像数据
 cifar10_data = datasets.CIFAR10('~/.pytorch/CIFAR10_data/', download=True, train=True).data
+# flowers102 = datasets.Flowers102('~/.pytorch/CIFAR10_data/', download=True, split='train').
 
 # 定义图像数据转换
 transform = transforms.Compose([transforms.ToTensor(),
@@ -56,7 +58,8 @@ model.to(device)
 #                                                   f"_batchSize{configs['train_batch_size']}"
 #                                                   f"_lr{configs['learning_rate']}"
 #                                                   f"_encoderWeight{configs['encoder_weight']}"
-#                                                   f"_decoderWeight{configs['decoder_weight']}.pth")
+#                                                   f"_decoderWeight{configs['decoder_weight']}
+#                                                   f"_imgSize{configs['img_width']}x{configs['img_height']}.pth")
 
 # 定义损失函数
 criterion = nn.MSELoss()
@@ -126,7 +129,8 @@ for epoch in range(configs['epoch_num']):
                                                           f"_host{configs['host_channels']}"
                                                           f"_guest{configs['guest_channels']}"
                                                           f"_epochNum{configs['epoch_num']}"
-                                                          f"_batchSize{int(configs['train_batch_size']/2)}"
+                                                          f"_batchSize{int(configs['train_batch_size'] / 2)}"
                                                           f"_lr{configs['learning_rate']}"
                                                           f"_encoderWeight{configs['encoder_weight']}"
-                                                          f"_decoderWeight{configs['decoder_weight']}.pth")
+                                                          f"_decoderWeight{configs['decoder_weight']}"
+                                                          f"_imgSize{configs['img_width']}x{configs['img_height']}.pth")
