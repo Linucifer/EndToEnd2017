@@ -9,6 +9,7 @@ from steg_net import StegNet
 
 # 定义参数
 configs = {
+    'dataset': 'flower102',
     'host_channels': 3,
     'guest_channels': 1,
     'img_width': 300,
@@ -32,9 +33,10 @@ transforms = transforms.Compose([transforms.Resize([configs['img_width'], config
 flowers102_train_dataset = datasets.Flowers102('~/.pytorch/Flowers102/', download=True, split='test',
                                                transform=transforms)
 flowers102_train_data_loader = DataLoader(flowers102_train_dataset, batch_size=configs['train_batch_size'],
-                                          shuffle=True)
+                                          shuffle=True, drop_last=True)
 flowers102_val_dataset = datasets.Flowers102('~/.pytorch/Flowers102/', download=True, split='val', transform=transforms)
-flowers102_val_data_loader = DataLoader(flowers102_val_dataset, batch_size=configs['val_batch_size'], shuffle=True)
+flowers102_val_data_loader = DataLoader(flowers102_val_dataset, batch_size=configs['val_batch_size'],
+                                        shuffle=True, drop_last=True)
 
 # Food101-->构建数据集
 # food101_train_dataset = datasets.Food101('~/.pytorch/Food101/', download=True, split='train', transform=transforms)
@@ -50,10 +52,11 @@ print(f"Running device is {device.type}")
 model = StegNet()
 model.to(device)
 # model.load_model(configs['model_path'], file_name=f"steg_net"
+#                                                   f"_dataset{configs['dataset']}"
 #                                                   f"_host{configs['host_channels']}"
 #                                                   f"_guest{configs['guest_channels']}"
 #                                                   f"_epochNum{configs['epoch_num']}"
-#                                                   f"_batchSize{configs['train_batch_size']}"
+#                                                   f"_batchSize{int(configs['train_batch_size']/2)}"
 #                                                   f"_lr{configs['learning_rate']}"
 #                                                   f"_encoderWeight{configs['encoder_weight']}"
 #                                                   f"_decoderWeight{configs['decoder_weight']}
@@ -76,10 +79,7 @@ for epoch in range(configs['epoch_num']):
     for batch in tqdm(flowers102_train_data_loader, desc=f"Flowers102 Train Epoch: {epoch}"):
         # 使用数据集的图像部分作为本模型的训练数据
         train_data, _ = [x.to(device) for x in batch]
-        # 防止最后一个批次的数据不够 batch_size 大小
-        if len(train_data) < configs['train_batch_size']:
-            print(f"batch_size: {len(train_data)}")
-            continue
+
         # 将一半数据作为host 另一半数据作为guest
         host_img = train_data[0:int(train_data.shape[0] / 2)]
         guest_img = train_data[int(train_data.shape[0] / 2):]
@@ -131,10 +131,7 @@ for epoch in range(configs['epoch_num']):
             for batch in tqdm(flowers102_val_data_loader, desc=f"Flowers102 Val Epoch: {epoch}"):
                 # 使用数据集的图像部分作为本模型的训练数据
                 val_data, _ = [x.to(device) for x in batch]
-                # 防止最后一个批次的数据不够 batch_size 大小
-                if len(val_data) < configs['train_batch_size']:
-                    print(f"batch_size: {len(val_data)}")
-                    continue
+
                 # 将一半数据作为host 另一半数据作为guest
                 host_img = val_data[0:int(val_data.shape[0] / 2)]
                 guest_img = val_data[int(val_data.shape[0] / 2):]
@@ -178,6 +175,7 @@ for epoch in range(configs['epoch_num']):
         print(f"Validation loss decreased {min_val_loss} --> {val_loss}")
         min_val_loss = val_loss
         model.save_model(configs['model_path'], file_name=f"steg_net"
+                                                          f"_dataset{configs['dataset']}"
                                                           f"_host{configs['host_channels']}"
                                                           f"_guest{configs['guest_channels']}"
                                                           f"_epochNum{configs['epoch_num']}"

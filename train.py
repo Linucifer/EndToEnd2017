@@ -9,6 +9,7 @@ from steg_net import StegNet
 
 # 定义参数
 configs = {
+    'dataset': 'cifar10',
     'train_rate': 0.8,  # 训练数据占数据总量的比例
     'host_channels': 3,
     'guest_channels': 1,
@@ -22,7 +23,6 @@ configs = {
     'model_path': '/content/drive/MyDrive/MyModels/End_to_end_Stegnography_2017',
     'learning_rate': 1e-4
 }
-
 
 # 下载训练图像数据
 cifar10_data = datasets.CIFAR10('~/.pytorch/CIFAR10_data/', download=True, train=True).data
@@ -44,18 +44,19 @@ val_dataset_loader = DataLoader(val_dataset,
                                 batch_size=configs['val_batch_size'],
                                 shuffle=True)
 
-# 训练
+# 训练**********************************************************************************************
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Running device is {device.type}")
 
-# 使用默认参数构建模型
+# 使用默认参数构建模型s
 model = StegNet()
 model.to(device)
 # model.load_model(configs['model_path'], file_name=f"steg_net"
+#                                                   f"_dataset{configs['dataset']}"
 #                                                   f"_host{configs['host_channels']}"
 #                                                   f"_guest{configs['guest_channels']}"
 #                                                   f"_epochNum{configs['epoch_num']}"
-#                                                   f"_batchSize{configs['train_batch_size']}"
+#                                                   f"_batchSize{int(configs['train_batch_size']/2)}"
 #                                                   f"_lr{configs['learning_rate']}"
 #                                                   f"_encoderWeight{configs['encoder_weight']}"
 #                                                   f"_decoderWeight{configs['decoder_weight']}
@@ -126,6 +127,7 @@ for epoch in range(configs['epoch_num']):
         print(f"Validation loss decreased {min_val_loss} --> {val_loss}")
         min_val_loss = val_loss
         model.save_model(configs['model_path'], file_name=f"steg_net"
+                                                          f"_dataset{configs['dataset']}"
                                                           f"_host{configs['host_channels']}"
                                                           f"_guest{configs['guest_channels']}"
                                                           f"_epochNum{configs['epoch_num']}"
